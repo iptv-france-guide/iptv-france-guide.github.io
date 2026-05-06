@@ -1,0 +1,21 @@
+name: Ping Google Sitemap
+
+on:
+  push:
+    paths:
+      - 'sitemap.xml'
+
+jobs:
+  ping-google:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Google to re-crawl sitemap
+        run: |
+          echo "Pinging Google with the updated sitemap..."
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" "https://www.google.com/ping?sitemap=https://iptv-france-guide.github.io/sitemap.xml")
+          if [ "$RESPONSE" -eq 200 ]; then
+            echo "Successfully pinged Google!"
+          else
+            echo "Failed to ping Google. HTTP Status: $RESPONSE"
+            exit 1
+          fi
